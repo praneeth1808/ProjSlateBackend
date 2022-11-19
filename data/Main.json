@@ -1,6 +1,1 @@
-{
-  "CreatedAt": "2022-11-19T14:15:34.092687",
-  "LastModified": "2022-11-19T14:15:34.092699",
-  "Order": [],
-  "Blocks": []
-}
+{"CreatedAt": "2022-11-19T17:15:17.880983", "LastModified": "2022-11-19T17:16:05.153511", "Order": [], "Blocks": [{"id": "02c7f3e7-3927-4511-a9a1-d80f595920ba", "Category": "Data", "Attributes": [{"key": "Description", "value": "The Boston Dataframe"}, {"key": "DataSet", "value": "Boston"}, {"key": "filename", "value": "boston.csv"}]}, {"id": "d1e23f42-d97f-4239-bf1f-22d6e7084c5e", "Category": "Transform", "Attributes": [{"key": "Description", "value": "This block applies Standerdisation to the dataframe."}, {"key": "Apply", "value": "Standardization"}]}, {"id": "338ca54d-c3cb-442a-bf2b-095362007a8b", "Category": "Transform", "Attributes": [{"key": "Description", "value": "This block applies Standerdisation to the dataframe."}, {"key": "Apply", "value": "Normalization"}]}]}

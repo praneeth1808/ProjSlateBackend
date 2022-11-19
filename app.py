@@ -7,6 +7,7 @@ app = Flask(__name__)
 
 model = Model()
 
+
 @app.route('/process/', methods=['GET'])
 def respond():
     # input the string as text
@@ -14,37 +15,30 @@ def respond():
     print(f"Received: {text}")
 
     response = {}
-    
+
     if not text:
         response["ERROR"] = "No text Found found. Please send a text."
     else:
-        model.process(text)
-        response = model.getModel()
+        response = model.process(text)
 
     # Return the response in json format
     return jsonify(response)
 
+
 @app.route('/results/', methods=['GET'])
 def respond_res():
     return jsonify(model.Results())
+
 
 @app.route('/getModel/', methods=['GET'])
 def respond_get():
     return jsonify(model.getModel())
 
 
-
 @app.route('/')
 def index():
     # A welcome message to test our server
     return "<h1>Welcome to Project Slate</h1>"
-
-
-
-
-
-
-
 
 
 if __name__ == '__main__':

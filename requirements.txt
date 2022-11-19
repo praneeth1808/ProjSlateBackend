@@ -12,3 +12,4 @@ dialogflow==2.0.0
 google-api-core==1.33.2
 grpcio==1.50.0
 pandas==1.5.1
+scikit-learn==1.1.3
