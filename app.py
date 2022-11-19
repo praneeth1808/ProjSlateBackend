@@ -1,13 +1,11 @@
 from flask import Flask, request, jsonify
 from detectIntent import detect_intent
 from JsonModel.jsonModel import JsonModel as JM
-
+from ProcessModel.model import Model
 
 app = Flask(__name__)
 
-jsonModel = JM()
-print(jsonModel.resetModel())
-print(jsonModel.saveModel())
+model = Model()
 
 @app.route('/process/', methods=['GET'])
 def respond():
@@ -15,19 +13,26 @@ def respond():
     text = request.args.get("text", None)
     print(f"Received: {text}")
 
-    response = {
-
-     }
+    response = {}
     
     if not text:
         response["ERROR"] = "No text Found found. Please send a text."
     else:
-        response = {
-        "ActionItem": detect_intent(text)
-     }
+        model.process(text)
+        response = model.getModel()
 
     # Return the response in json format
     return jsonify(response)
+
+@app.route('/results/', methods=['GET'])
+def respond_res():
+    return jsonify(model.Results())
+
+@app.route('/getModel/', methods=['GET'])
+def respond_get():
+    return jsonify(model.getModel())
+
+
 
 @app.route('/')
 def index():
