@@ -96,4 +96,13 @@ class JsonModel:
                 "key": "Apply",
                 "value": "Normalization"
             })
+        else:
+            block["Attributes"].append({
+                "key": "Description",
+                "value": "This block applies Standerdisation to the dataframe."
+            })
+            block["Attributes"].append({
+                "key": "Apply",
+                "value": "None"
+            })
         self.addBlock(block)

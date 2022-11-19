@@ -54,11 +54,11 @@ class Model:
         attributes = self.processComplexJson(block["Attributes"])
         df = self.df.copy()
         print(attributes)
-        if attributes["Apply"] == "Standardization":
-            df = ApplyStandardization(df)
-        elif attributes["Apply"] == "Normalization":
-            df = ApplyNormalization(df)
-
+        if "Apply" in attributes:
+            if attributes["Apply"] == "Standardization":
+                df = ApplyStandardization(df)
+            elif attributes["Apply"] == "Normalization":
+                df = ApplyNormalization(df)
         self.df = df
         # self.df = pd.read_csv(getDataFilePath(attributes["filename"]))
 
