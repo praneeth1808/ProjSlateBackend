@@ -1,1 +1,1 @@
-web: gunicorn slate:app
+web: gunicorn app:app
