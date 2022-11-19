@@ -50,8 +50,10 @@ class Model:
         self.df = pd.read_csv(getDataFilePath(attributes["filename"]))
 
     def processTransformBlock(self, block):
+        print(block)
         attributes = self.processComplexJson(block["Attributes"])
         df = self.df.copy()
+        print(attributes)
         if attributes["Apply"] == "Standardization":
             df = ApplyStandardization(df)
         elif attributes["Apply"] == "Normalization":

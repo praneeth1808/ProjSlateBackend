@@ -1,1 +1,38 @@
-{"CreatedAt": "2022-11-19T17:15:17.880983", "LastModified": "2022-11-19T17:16:05.153511", "Order": [], "Blocks": [{"id": "02c7f3e7-3927-4511-a9a1-d80f595920ba", "Category": "Data", "Attributes": [{"key": "Description", "value": "The Boston Dataframe"}, {"key": "DataSet", "value": "Boston"}, {"key": "filename", "value": "boston.csv"}]}, {"id": "d1e23f42-d97f-4239-bf1f-22d6e7084c5e", "Category": "Transform", "Attributes": [{"key": "Description", "value": "This block applies Standerdisation to the dataframe."}, {"key": "Apply", "value": "Standardization"}]}, {"id": "338ca54d-c3cb-442a-bf2b-095362007a8b", "Category": "Transform", "Attributes": [{"key": "Description", "value": "This block applies Standerdisation to the dataframe."}, {"key": "Apply", "value": "Normalization"}]}]}
+{
+  "CreatedAt": "2022-11-19T17:27:16.132602",
+  "LastModified": "2022-11-19T17:31:30.944849",
+  "Order": [],
+  "Blocks": [
+    {
+      "id": "cf8e03be-8858-45df-a156-f18cfc746f03",
+      "Category": "Data",
+      "Attributes": [
+        { "key": "Description", "value": "The Iris Dataframe" },
+        { "key": "DataSet", "value": "Iris" },
+        { "key": "filename", "value": "iris.csv" }
+      ]
+    },
+    {
+      "id": "7ed8175d-fbf6-4cc6-8d76-7d91bb18994b",
+      "Category": "Transform",
+      "Attributes": [
+        {
+          "key": "Description",
+          "value": "This block applies Standerdisation to the dataframe."
+        },
+        { "key": "Apply", "value": "Normalization" }
+      ]
+    },
+    {
+      "id": "6141a3d8-92ac-4d38-9335-dfb5139370bd",
+      "Category": "Transform",
+      "Attributes": [
+        {
+          "key": "Description",
+          "value": "This block applies Standerdisation to the dataframe."
+        },
+        { "key": "Apply", "value": "Standardization" }
+      ]
+    }
+  ]
+}
