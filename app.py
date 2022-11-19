@@ -1,48 +1,41 @@
 from flask import Flask, request, jsonify
+from detectIntent import detect_intent
 app = Flask(__name__)
 
 
-@app.route('/message/', methods=['GET'])
-def respond():
-    # Retrieve the name from the url parameter /getmsg/?name=
-    text = request.args.get("text", None)
 
-    # For debugging
+
+@app.route('/process/', methods=['GET'])
+def respond():
+    # input the string as text
+    text = request.args.get("text", None)
     print(f"Received: {text}")
 
-    response = {}
+    response = {
 
-    # Check if the user sent a name at all
+     }
+
     if not text:
-        response["ERROR"] = "No messageFound found. Please send a name."
+        response["ERROR"] = "No text Found found. Please send a text."
     else:
-        response["MESSAGE"] = f"We are processing your message: {text}"
+        response = {
+        "ActionItem": detect_intent(text)
+     }
 
     # Return the response in json format
     return jsonify(response)
 
-
-@app.route('/post/', methods=['POST'])
-def post_something():
-    param = request.form.get('name')
-    print(param)
-    # You can add the test cases you made in the previous function, but in our case here you are just testing the POST functionality
-    if param:
-        return jsonify({
-            "Message": f"Welcome {name} to our awesome API!",
-            # Add this option to distinct the POST request
-            "METHOD": "POST"
-        })
-    else:
-        return jsonify({
-            "ERROR": "No name found. Please send a name."
-        })
-
-
 @app.route('/')
 def index():
     # A welcome message to test our server
-    return "<h1>Welcome to our medium-greeting-api!</h1>"
+    return "<h1>Welcome to Project Slate</h1>"
+
+
+
+
+
+
+
 
 
 if __name__ == '__main__':
