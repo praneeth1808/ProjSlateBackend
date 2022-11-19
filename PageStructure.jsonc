@@ -1,0 +1,59 @@
+// Each of this json will be acting as a page for the frontend or backend
+
+// We will save this json and make it available for further use
+{
+  //Will have the time when the page is created
+  "CreatedAt": "2022-05-12T23:50:21.817Z",
+  // When was the page last modified
+  "LastModified": "2022-05-12T23:50:21.817Z",
+  // The order of the block can be changed as one of the action
+  "Order": [
+    // The Ids will be from the block attribure
+    "skdhfskhbdf;ksb",
+    "sdkfjbnskfcbnknkwef"
+  ],
+  // Each json inside this block will be a individual block on the screen
+  "Blocks": [
+    {
+      // each block will be given an unique ID ( UUID4)
+      "id": "sdgflsdflhjsvdlfvsljdhfv",
+      // Possible categories are Data / Transform / Model
+      "Category": "Data",
+      "Attributes": [
+        {
+          //This will be available for Data Category alone
+          "key": "DataSet",
+          "value": "1_Iris"
+        },
+        {
+          //This will be available for all categories
+          "key": "Title",
+          "value": "TheDataSet"
+        },
+        {
+          //This will be available for all
+          "key": "Description",
+          "value": "1_Iris"
+        },
+        {
+          //This will be available for Ml model/ Transform Category
+          "key": "parameters",
+          "value": [
+            // Will have the list of parameters based on model
+            // For the frontend we just need to display them on the block
+            // Backend might use them to set the paramets // If not provided backend can use default values
+            {
+              "key": "depth",
+              "value": "4"
+            }
+          ]
+        },
+        {
+          //This will be available for Data Category alone
+          "key": "DataSet",
+          "value": "1_Iris"
+        }
+      ]
+    }
+  ]
+}

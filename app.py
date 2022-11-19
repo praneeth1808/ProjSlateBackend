@@ -1,9 +1,13 @@
 from flask import Flask, request, jsonify
 from detectIntent import detect_intent
+from JsonModel.jsonModel import JsonModel as JM
+
+
 app = Flask(__name__)
 
-
-
+jsonModel = JM()
+print(jsonModel.resetModel())
+print(jsonModel.saveModel())
 
 @app.route('/process/', methods=['GET'])
 def respond():
@@ -14,7 +18,7 @@ def respond():
     response = {
 
      }
-
+    
     if not text:
         response["ERROR"] = "No text Found found. Please send a text."
     else:
