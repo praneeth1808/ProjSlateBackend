@@ -14,6 +14,7 @@ class JsonModel:
         model["LastModified"] = datetime.now(
         ).isoformat(timespec='microseconds')
         self.model = model
+        self.saveModel()
         return self.model
 
     def setLastModified(self):
