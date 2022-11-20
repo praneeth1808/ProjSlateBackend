@@ -96,6 +96,15 @@ class JsonModel:
                 "key": "Apply",
                 "value": "Normalization"
             })
+        elif selection == "ApplySplitTrainTest":
+            block["Attributes"].append({
+                "key": "Description",
+                "value": "This block applies Split into train and test into 80-20%"
+            })
+            block["Attributes"].append({
+                "key": "Apply",
+                "value": "SplitTrainTest"
+            })
         else:
             block["Attributes"].append({
                 "key": "Description",
@@ -104,5 +113,31 @@ class JsonModel:
             block["Attributes"].append({
                 "key": "Apply",
                 "value": "None"
+            })
+        self.addBlock(block)
+
+    def addModelBlock(self, selectedModel):
+        block = {
+            "id": str(uuid.uuid4()),
+            "Category": "Model",
+            "Attributes": []
+        }
+        if selectedModel == "Linear Regression":
+            block["Attributes"].append({
+                "key": "Description",
+                "value": "This block performs ML operation Linear Regression"
+            })
+            block["Attributes"].append({
+                "key": "Apply",
+                "value": "LinearRegression"
+            })
+        else:
+            block["Attributes"].append({
+                "key": "Description",
+                "value": "This block performs ML operation Decission Tree"
+            })
+            block["Attributes"].append({
+                "key": "Apply",
+                "value": "DecissionTree"
             })
         self.addBlock(block)

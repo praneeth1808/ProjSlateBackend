@@ -1,16 +1,1 @@
-{
-  "CreatedAt": "2022-11-19T17:46:53.753678",
-  "LastModified": "2022-11-19T17:46:53.753828",
-  "Order": [],
-  "Blocks": [
-    {
-      "id": "aa7fb837-4a18-4fa1-b3bc-131c28b081fc",
-      "Category": "Data",
-      "Attributes": [
-        { "key": "Description", "value": "The Iris Dataframe" },
-        { "key": "DataSet", "value": "Iris" },
-        { "key": "filename", "value": "iris.csv" }
-      ]
-    }
-  ]
-}
+{"CreatedAt": "2022-11-19T19:43:04.527368", "LastModified": "2022-11-19T19:45:05.372116", "Order": [], "Blocks": [{"id": "597f111d-83ed-4bc9-b9e2-28d62708d2e4", "Category": "Data", "Attributes": [{"key": "Description", "value": "The Boston Dataframe"}, {"key": "DataSet", "value": "Boston"}, {"key": "filename", "value": "boston.csv"}]}, {"id": "c4a31263-0d8b-4ed3-9eb9-d82391885b2a", "Category": "Transform", "Attributes": [{"key": "Description", "value": "This block applies Standerdisation to the dataframe."}, {"key": "Apply", "value": "Normalization"}]}, {"id": "6cc2fbac-c451-4370-8692-f662035f2e54", "Category": "Transform", "Attributes": [{"key": "Description", "value": "This block applies Split into train and test into 80-20%"}, {"key": "Apply", "value": "SplitTrainTest"}]}, {"id": "29fdef32-f43d-48a6-bcf1-5e58cae9326f", "Category": "Model", "Attributes": [{"key": "Description", "value": "This block performs ML operation Linear Regression"}, {"key": "Apply", "value": "LinearRegression"}]}]}
