@@ -24,8 +24,6 @@ class Model:
 
     def process(self, text):
         if self.text == text:
-            print("Going through here")
-            print(self.jsonModel.get())
             self.text = ""
             ActionItem = detect_intent(text)
             if (ActionItem["Action"] == "DataSelection"):
@@ -36,7 +34,8 @@ class Model:
         if ActionItem["Action"] == "DataSelection":
             self.DataSelection(ActionItem["value"])
         elif ActionItem["Action"] == "TransformationSelection":
-            self.TransformationSelection(ActionItem["Selected"])
+            self.TransformationSelection(
+                ActionItem["Selected"], ActionItem["Params"])
         elif ActionItem["Action"] == "ModelSelection":
             self.ModelSelection(ActionItem["value"])
         elif ActionItem["Action"] == "Question":
@@ -74,8 +73,8 @@ class Model:
         self.scores = None
         return self.jsonModel.addDataBlock(dataset)
 
-    def TransformationSelection(self, selection):
-        return self.jsonModel.addTransformationBlock(selection)
+    def TransformationSelection(self, selection, params):
+        return self.jsonModel.addTransformationBlock(selection, params)
 
     def ModelSelection(self, selection):
         return self.jsonModel.addModelBlock(selection)
@@ -95,7 +94,7 @@ class Model:
         df = self.df.copy()
         if "Apply" in attributes:
             if attributes["Apply"] == "Standardization":
-                df = ApplyStandardization(df)
+                df = ApplyStandardization(df, attributes["Columns"])
             elif attributes["Apply"] == "Normalization":
                 df = ApplyNormalization(df)
             elif attributes["Apply"] == "SplitTrainTest":
@@ -132,8 +131,10 @@ class Model:
         #         "y_test": result_y_test
         #     }
         result = self.df.head(3).to_json(orient="index")
+        columns = list(self.df.columns)
         parsed = json.loads(result)
         results = [parsed[i] for i in list(parsed.keys())]
+        results.insert(0, columns)
         return results
 
     def ResetModel(self):

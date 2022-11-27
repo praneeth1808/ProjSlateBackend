@@ -1,5 +1,6 @@
 from google.cloud import dialogflow_v2beta1 as dialogflow
 from google.oauth2 import service_account
+from google.protobuf.json_format import MessageToDict
 import json
 
 
@@ -23,9 +24,14 @@ def detect_intent(text):
 
     response = session_client.detect_intent(
         request={"session": session, "query_input": query_input})
+    print(json.loads(response.query_result.fulfillment_text))
     try:
-        json_value = json.loads(response.query_result.fulfillment_text)
+        json_value = json.loads(
+            response.query_result.fulfillment_text)
         json_value["Intent"] = response.query_result.intent.display_name
+        if ("Selected" in json_value):
+            json_value["Params"] = MessageToDict(
+                response._pb)["queryResult"]["parameters"]
         return json_value
     except:
         return {"Action": "Question", "Text": response.query_result.fulfillment_text, "Intent": response.query_result.intent.display_name}

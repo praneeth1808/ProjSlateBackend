@@ -25,7 +25,7 @@ def respond():
         response["ERROR"] = "No text Found found. Please send a text."
     else:
         response = model.process(text)
-
+    print(response)
     # Return the response in json format
     return jsonify(response)
 
