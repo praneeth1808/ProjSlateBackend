@@ -1,0 +1,4 @@
+Error Case : 
+Select sales data set
+Reset
+select sales data set

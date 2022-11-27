@@ -34,7 +34,11 @@ class JsonModel:
         return self.model
 
     def initiate(self):
-        model = readJson("Main.json")
+        try:
+            model = readJson("Main.json")
+        except:
+            self.resetModel()
+            model = readJson("Main.json")
         self.model = model
 
     def addDataBlock(self, dataset):
@@ -61,15 +65,15 @@ class JsonModel:
         else:
             block["Attributes"].append({
                 "key": "Description",
-                "value": "The Boston Dataframe"
+                "value": "The sales dataset"
             })
             block["Attributes"].append({
                 "key": "DataSet",
-                "value": "Boston"
+                "value": "Sales"
             })
             block["Attributes"].append({
                 "key": "filename",
-                "value": "boston.csv"
+                "value": "advertising.csv"
             })
         self.addBlock(block)
 
@@ -91,7 +95,7 @@ class JsonModel:
         elif selection == "ApplyNormalization":
             block["Attributes"].append({
                 "key": "Description",
-                "value": "This block applies Standerdisation to the dataframe."
+                "value": "This block applies Normalization to the dataframe."
             })
             block["Attributes"].append({
                 "key": "Apply",

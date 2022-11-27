@@ -5,7 +5,8 @@ import json
 app = Flask(__name__)
 
 dialogflow_key = json.load(open('key2.json'))
-credentials = (service_account.Credentials.from_service_account_info(dialogflow_key))
+credentials = (
+    service_account.Credentials.from_service_account_info(dialogflow_key))
 DIALOGFLOW_PROJECT_ID = 'proj-slate-rekj'
 DIALOGFLOW_LANGUAGE_CODE = 'en-US'
 GOOGLE_APPLICATION_CREDENTIALS = 'key.json'
@@ -21,7 +22,6 @@ def respond():
     print(f"Received: {text}")
 
     response = {}
-    print(detect_intent_texts(DIALOGFLOW_PROJECT_ID, SESSION_ID, [text], DIALOGFLOW_LANGUAGE_CODE))
     # Check if the user sent a name at all
     if not text:
         response["ERROR"] = "No messageFound found. Please send a name."
@@ -35,7 +35,6 @@ def respond():
 @app.route('/post/', methods=['POST'])
 def post_something():
     param = request.form.get('name')
-    print(param)
     # You can add the test cases you made in the previous function, but in our case here you are just testing the POST functionality
     if param:
         return jsonify({
@@ -65,33 +64,16 @@ def detect_intent_texts(project_id, session_id, texts, language_code):
     session_client = dialogflow.SessionsClient(credentials=credentials)
 
     session = session_client.session_path(project_id, session_id)
-    print("Session path: {}\n".format(session))
 
     for text in texts:
-        text_input = dialogflow.TextInput(text=text, language_code=language_code)
+        text_input = dialogflow.TextInput(
+            text=text, language_code=language_code)
 
         query_input = dialogflow.QueryInput(text=text_input)
 
         response = session_client.detect_intent(
             request={"session": session, "query_input": query_input}
         )
-
-        print("=" * 20)
-        print("Query text: {}".format(response.query_result.query_text))
-        print(
-            "Detected intent: {} (confidence: {})\n".format(
-                response.query_result.intent.display_name,
-                response.query_result.intent_detection_confidence,
-            )
-        )
-        print("Fulfillment text: {}\n".format(response.query_result.fulfillment_text))
-
-
-
-
-
-
-
 
 
 if __name__ == '__main__':

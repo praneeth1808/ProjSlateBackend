@@ -4,7 +4,6 @@ import numpy as np
 
 
 def LinearRegressionModel(X_train, X_test, y_train, y_test):
-    print(y_train, y_test)
     lr = LinearRegression()
     lr = lr.fit(X_train, y_train)
     y_pred = lr.predict(X_test)

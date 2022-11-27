@@ -19,8 +19,19 @@ class Model:
         self.y_train = None
         self.y_test = None
         self.scores = None
+        self.jsonModel.resetModel()
+        self.text = ""
 
     def process(self, text):
+        if self.text == text:
+            print("Going through here")
+            print(self.jsonModel.get())
+            self.text = ""
+            ActionItem = detect_intent(text)
+            if (ActionItem["Action"] == "DataSelection"):
+                self.DataSelection(ActionItem["value"])
+            return self.returnRes(ActionItem)
+        self.text = text
         ActionItem = detect_intent(text)
         if ActionItem["Action"] == "DataSelection":
             self.DataSelection(ActionItem["value"])
@@ -28,8 +39,17 @@ class Model:
             self.TransformationSelection(ActionItem["Selected"])
         elif ActionItem["Action"] == "ModelSelection":
             self.ModelSelection(ActionItem["value"])
-        self.processJsonModel()
-        return {"model": self.jsonModel.get(), "Results": self.processJsonModel(), "CurrentProcess": ActionItem}
+        elif ActionItem["Action"] == "Question":
+            pass
+        return self.returnRes(ActionItem)
+
+    def returnRes(self, action):
+        if action:
+            return {"model": self.jsonModel.get(), "Results": self.processJsonModel(),
+                    "CurrentProcess": action}
+        else:
+            return {"model": self.jsonModel.get(), "Results": self.processJsonModel(),
+                    "CurrentProcess": {}}
 
     def processJsonModel(self):
         model_json = self.jsonModel.get()
@@ -81,7 +101,6 @@ class Model:
             elif attributes["Apply"] == "SplitTrainTest":
                 X = df[list(df.columns[:-1])]
                 y = list(df[df.columns[-1]])
-                print(y)
                 self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
                     X, y, test_size=0.20, random_state=42)
         self.df = df
@@ -99,19 +118,31 @@ class Model:
                 self.scores = response["Scores"]
 
     def Results(self):
-        if self.scores is not None:
-            return self.scores
-        if self.X_train is not None or self.X_test is not None or self.y_train is not None or self.y_test is not None:
-            result_X_train = self.X_train.head(2).to_json(orient="index")
-            result_y_train = self.y_train[:2]
-            result_X_test = self.X_test.head(2).to_json(orient="index")
-            result_y_test = self.y_test[:2]
-            return {
-                "X_train": json.loads(result_X_train),
-                "y_train": result_y_train,
-                "X_test": json.loads(result_X_test),
-                "y_test": result_y_test
-            }
+        # if self.scores is not None:
+        #     return self.scores
+        # if self.X_train is not None or self.X_test is not None or self.y_train is not None or self.y_test is not None:
+        #     result_X_train = self.X_train.head(2).to_json(orient="index")
+        #     result_y_train = self.y_train[:2]
+        #     result_X_test = self.X_test.head(2).to_json(orient="index")
+        #     result_y_test = self.y_test[:2]
+        #     return {
+        #         "X_train": json.loads(result_X_train),
+        #         "y_train": result_y_train,
+        #         "X_test": json.loads(result_X_test),
+        #         "y_test": result_y_test
+        #     }
         result = self.df.head(3).to_json(orient="index")
         parsed = json.loads(result)
-        return parsed
+        results = [parsed[i] for i in list(parsed.keys())]
+        return results
+
+    def ResetModel(self):
+        self.jsonModel = JM()
+        self.df = pd.DataFrame({})
+        self.X_train = None
+        self.X_test = None
+        self.y_train = None
+        self.y_test = None
+        self.scores = None
+        self.jsonModel.resetModel()
+        return self.jsonModel.get()

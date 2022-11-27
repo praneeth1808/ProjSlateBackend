@@ -2,9 +2,14 @@ from flask import Flask, request, jsonify
 from detectIntent import detect_intent
 from JsonModel.jsonModel import JsonModel as JM
 from ProcessModel.model import Model
+from flask_cors import CORS, cross_origin
+
+# Run command : nodemon --ignore 'data/' --exec python3 app.py
+
 
 app = Flask(__name__)
-
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 model = Model()
 
 
@@ -28,6 +33,12 @@ def respond():
 @app.route('/results/', methods=['GET'])
 def respond_res():
     return jsonify(model.Results())
+
+
+@app.route('/resetModel/', methods=['GET'])
+def respond_reset():
+    model.ResetModel()
+    return jsonify(model.ResetModel())
 
 
 @app.route('/getModel/', methods=['GET'])
