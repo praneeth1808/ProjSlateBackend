@@ -44,7 +44,6 @@ class JsonModel:
         dataBlock = None
         MLBlock = None
         EntireBlocks = []
-        print(self.model)
         for index, block in enumerate(self.model["Blocks"]):
             if block["Category"] == "Model":
                 MLBlock = block
@@ -114,13 +113,23 @@ class JsonModel:
         self.addBlock(block)
 
     def addTransformationBlock(self, selection, params):
-        block = self.isBlockExist(selection)
+        option = None
+        if params:
+            if "replaceoptions" in params:
+                option = params["replaceoptions"]
+        block = self.isBlockExist(selection, option)
         if block:
             if "Selected" in selection:
                 columns = self.SelectCols(self.dataName, params)
             else:
                 columns = "All"
-            block, message = self.ModifyTheExistingBlock(block, columns)
+            if selection == "RemoveOutliers":
+                block, message = self.ModifyTheExistingBlock(
+                    block, columns, params["OutliersOptions"])
+            else:
+                block, message = self.ModifyTheExistingBlock(
+                    block, columns)
+
             self.updateBlock(block)
             return self.model
         block = {
@@ -177,6 +186,94 @@ class JsonModel:
                 "key": "Apply",
                 "value": "SplitTrainTest"
             })
+        elif selection == "RemoveNullRows":
+            block["Attributes"].append({
+                "key": "Description",
+                "value": "This block Removes Null rows"
+            })
+            block["Attributes"].append({
+                "key": "Apply",
+                "value": "RemoveNullRows"
+            })
+            block["Attributes"].append({
+                "key": "Columns",
+                "value": "All"
+            })
+        elif selection == "RemoveNullColumns":
+            block["Attributes"].append({
+                "key": "Description",
+                "value": "This block Removes Null columns"
+            })
+            block["Attributes"].append({
+                "key": "Apply",
+                "value": "RemoveNullColumns"
+            })
+            block["Attributes"].append({
+                "key": "Columns",
+                "value": "All"
+            })
+        elif selection == "RemoveNullSelectedColumns":
+            block["Attributes"].append({
+                "key": "Description",
+                "value": "This block Removes Null columns"
+            })
+            block["Attributes"].append({
+                "key": "Apply",
+                "value": "RemoveNullRows"
+            })
+            columns = self.SelectCols(self.dataName, params)
+            block["Attributes"].append({
+                "key": "Columns",
+                "value": columns
+            })
+        elif selection == "ReplaceNullValues":
+            block["Attributes"].append({
+                "key": "Description",
+                "value": "This block Replaces Null columns"
+            })
+            block["Attributes"].append({
+                "key": "Apply",
+                "value": "ReplaceNullValues"
+            })
+            block["Attributes"].append({
+                "key": "Columns",
+                "value": "All"
+            })
+            block["Attributes"].append({
+                "key": "ReplaceWith",
+                "value": params["replaceoptions"]
+            })
+        elif selection == "ReplaceSelectedNullValues":
+            block["Attributes"].append({
+                "key": "Description",
+                "value": "This block Replaces Null columns"
+            })
+            block["Attributes"].append({
+                "key": "Apply",
+                "value": "ReplaceNullValues"
+            })
+            block["Attributes"].append({
+                "key": "ReplaceWith",
+                "value": params["replaceoptions"]
+            })
+            columns = self.SelectCols(self.dataName, params)
+            block["Attributes"].append({
+                "key": "Columns",
+                "value": columns
+            })
+        elif selection == "RemoveOutliers":
+            block["Attributes"].append({
+                "key": "Description",
+                "value": "This block Removes outlier values"
+            })
+            block["Attributes"].append({
+                "key": "Apply",
+                "value": "RemoveOutliers"
+            })
+            block["Attributes"].append({
+                "key": "Option",
+                "value": params["OutliersOptions"]
+            })
         else:
             block["Attributes"].append({
                 "key": "Description",
@@ -224,7 +321,7 @@ class JsonModel:
                 del blocks[index]
         self.model["Blocks"] = blocks
 
-    def isBlockExist(self, selection):
+    def isBlockExist(self, selection, option=None):
         if selection == "ApplyStandardization" or selection == "ApplySelectedStandardization":
             for block in self.model["Blocks"]:
                 if block["Category"] == "Transform":
@@ -243,24 +340,48 @@ class JsonModel:
                     attributes = processComplexJson(block["Attributes"])
                     if attributes["Apply"] == "SplitTrainTest":
                         return block
+        elif selection == "RemoveNullRows" or selection == "RemoveNullSelectedColumns":
+            for block in self.model["Blocks"]:
+                if block["Category"] == "Transform":
+                    attributes = processComplexJson(block["Attributes"])
+                    if attributes["Apply"] == "RemoveNullRows":
+                        return block
+        elif selection == "ReplaceNullValues" or selection == "ReplaceSelectedNullValues":
+            for block in self.model["Blocks"]:
+                if block["Category"] == "Transform":
+                    attributes = processComplexJson(block["Attributes"])
+                    if attributes["Apply"] == "ReplaceNullValues" and option == attributes["ReplaceWith"]:
+                        return block
+        elif selection == "RemoveOutliers":
+            for block in self.model["Blocks"]:
+                if block["Category"] == "Transform":
+                    attributes = processComplexJson(block["Attributes"])
+                    if attributes["Apply"] == "RemoveOutliers":
+                        return block
         return None
 
-    def ModifyTheExistingBlock(self, block, columns):
+    def ModifyTheExistingBlock(self, block, columns, option=None):
         attributes = processComplexJson(block["Attributes"])
-        if attributes["Columns"] == "All":
-            return [block, "Applied to all columns already, Remove the block first."]
-        elif columns == "All":
+        if option != None:
             for index, att in enumerate(block["Attributes"]):
-                if (att["key"] == "Columns"):
-                    for col in columns:
-                        block["Attributes"][index]["value"] = "All"
+                if (att["key"] == "Option"):
+                    block["Attributes"][index]["value"] = option
             return [block, ""]
-        elif len(attributes["Columns"]) > 0:
-            for index, att in enumerate(block["Attributes"]):
-                if (att["key"] == "Columns"):
-                    for col in columns:
-                        block["Attributes"][index]["value"].append(col)
-            return [block, ""]
+        elif "Columns" in attributes:
+            if attributes["Columns"] == "All":
+                return [block, "Applied to all columns already, Remove the block first."]
+            elif columns == "All":
+                for index, att in enumerate(block["Attributes"]):
+                    if (att["key"] == "Columns"):
+                        for col in columns:
+                            block["Attributes"][index]["value"] = "All"
+                return [block, ""]
+            elif len(attributes["Columns"]) > 0:
+                for index, att in enumerate(block["Attributes"]):
+                    if (att["key"] == "Columns"):
+                        for col in columns:
+                            block["Attributes"][index]["value"].append(col)
+                return [block, ""]
         else:
             return [block, "Something wrong"]
 
@@ -270,5 +391,5 @@ class JsonModel:
         elif dataName == "Sales":
             return params["columnssales"]
         else:
-            print("Something Wrong")
+            pass
         return []

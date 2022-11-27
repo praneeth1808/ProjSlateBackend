@@ -25,7 +25,6 @@ def respond():
         response["ERROR"] = "No text Found found. Please send a text."
     else:
         response = model.process(text)
-    print(response)
     # Return the response in json format
     return jsonify(response)
 
@@ -38,7 +37,7 @@ def respond_res():
 @app.route('/resetModel/', methods=['GET'])
 def respond_reset():
     model.ResetModel()
-    return jsonify(model.ResetModel())
+    return jsonify({"CurrentProcess": {}, "Results": None, "model": model.ResetModel()})
 
 
 @app.route('/getModel/', methods=['GET'])

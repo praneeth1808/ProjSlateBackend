@@ -8,6 +8,9 @@ import json
 from Transformations.Standardization import ApplyStandardization
 from Transformations.Normalization import ApplyNormalization
 from sklearn.model_selection import train_test_split
+from Transformations.RemoveNullValues import ApplyRemoveNullRows, ApplyRemoveNullColumns
+from Transformations.ReplaceNullValues import ReplaceNulls
+from Transformations.RemoveOutliers import removeOutliers
 
 
 class Model:
@@ -97,6 +100,15 @@ class Model:
                 df = ApplyStandardization(df, attributes["Columns"])
             elif attributes["Apply"] == "Normalization":
                 df = ApplyNormalization(df)
+            elif attributes["Apply"] == "RemoveNullRows":
+                df = ApplyRemoveNullRows(df, attributes["Columns"])
+            elif attributes["Apply"] == "RemoveNullColumns":
+                df = ApplyRemoveNullColumns(df, attributes["Columns"])
+            elif attributes["Apply"] == "ReplaceNullValues":
+                df = ReplaceNulls(
+                    df, attributes["Columns"], attributes["ReplaceWith"])
+            elif attributes["Apply"] == "RemoveOutliers":
+                df = removeOutliers(df, attributes["Option"])
             elif attributes["Apply"] == "SplitTrainTest":
                 X = df[list(df.columns[:-1])]
                 y = list(df[df.columns[-1]])
@@ -110,11 +122,13 @@ class Model:
             if attributes["Apply"] == "LinearRegression":
                 response = LinearRegressionModel(
                     self.X_train, self.X_test, self.y_train, self.y_test)
+                print(response["Scores"])
                 self.scores = response["Scores"]
             else:
                 response = DecissionTreeModel(
                     self.X_train, self.X_test, self.y_train, self.y_test)
                 self.scores = response["Scores"]
+                print(response["Scores"])
 
     def Results(self):
         # if self.scores is not None:

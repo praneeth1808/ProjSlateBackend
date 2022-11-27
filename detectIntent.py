@@ -24,7 +24,6 @@ def detect_intent(text):
 
     response = session_client.detect_intent(
         request={"session": session, "query_input": query_input})
-    print(json.loads(response.query_result.fulfillment_text))
     try:
         json_value = json.loads(
             response.query_result.fulfillment_text)
