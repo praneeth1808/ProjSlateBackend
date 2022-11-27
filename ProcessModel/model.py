@@ -1,7 +1,7 @@
 from JsonModel.jsonModel import JsonModel as JM
 from JsonModel.utility import getDataFilePath
-from MLModel.DecissionTree import DecissionTreeModel
-from MLModel.LinearRegression import LinearRegressionModel
+from MLModel.DecissionTree import DecissionTreeClassifierModel, DecissionTreeRegressorModel
+from MLModel.LinearRegression import LinearRegressionModel, LinearClassificationModel
 from detectIntent import detect_intent
 import pandas as pd
 import json
@@ -48,10 +48,10 @@ class Model:
     def returnRes(self, action):
         if action:
             return {"model": self.jsonModel.get(), "Results": self.processJsonModel(),
-                    "CurrentProcess": action}
+                    "CurrentProcess": action, "Scores": self.scores}
         else:
             return {"model": self.jsonModel.get(), "Results": self.processJsonModel(),
-                    "CurrentProcess": {}}
+                    "CurrentProcess": {}, "Scores": self.scores}
 
     def processJsonModel(self):
         model_json = self.jsonModel.get()
@@ -118,17 +118,40 @@ class Model:
 
     def processMlModel(self, block):
         attributes = self.processComplexJson(block["Attributes"])
+        unique_ration = (len(self.df[self.df.columns[-1]].unique()) /
+                         len(self.df[self.df.columns[-1]]))
+        if self.df.empty:
+            print("Empty dataframe")
+            return
+        self.df = ApplyRemoveNullRows(self.df, "All")
+        if self.X_train is not None or self.X_test is not None or self.y_train is not None or self.y_test is not None:
+            X = self.df[list(self.df.columns[:-1])]
+            y = list(self.df[self.df.columns[-1]])
+            self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
+                X, y, test_size=0.20, random_state=42)
         if "Apply" in attributes:
             if attributes["Apply"] == "LinearRegression":
-                response = LinearRegressionModel(
-                    self.X_train, self.X_test, self.y_train, self.y_test)
-                print(response["Scores"])
-                self.scores = response["Scores"]
+                if unique_ration < 0.05:
+                    response = LinearClassificationModel(
+                        self.X_train, self.X_test, self.y_train, self.y_test)
+                    print(response["Scores"])
+                    self.scores = response["Scores"]
+                else:
+                    response = LinearRegressionModel(
+                        self.X_train, self.X_test, self.y_train, self.y_test)
+                    print(response["Scores"])
+                    self.scores = response["Scores"]
             else:
-                response = DecissionTreeModel(
-                    self.X_train, self.X_test, self.y_train, self.y_test)
-                self.scores = response["Scores"]
-                print(response["Scores"])
+                if unique_ration < 0.05:
+                    response = DecissionTreeClassifierModel(
+                        self.X_train, self.X_test, self.y_train, self.y_test)
+                    self.scores = response["Scores"]
+                    print(response["Scores"])
+                else:
+                    response = DecissionTreeRegressorModel(
+                        self.X_train, self.X_test, self.y_train, self.y_test)
+                    self.scores = response["Scores"]
+                    print(response["Scores"])
 
     def Results(self):
         # if self.scores is not None:
