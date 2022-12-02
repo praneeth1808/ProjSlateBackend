@@ -29,7 +29,7 @@ def generate_graphs(df):
         df_new = px.data.gapminder().query("continent=='Oceania'")
         fig = px.line(df_new, x="year", y="lifeExp", color='country')
 
-        plotly.offline.plot(fig, filename='C:/plotlyplots/lifeExp.html')
+        plt.savefig('visualization1.png')
         # # Try Self
         # df_new = pd.read_csv(getDataFilePath("iris.csv"))
         # df_new['SepalWidth'].value_counts().plot(kind='bar')
@@ -40,21 +40,21 @@ def generate_graphs(df):
         #             vert=None, patch_artist=None, widths=None)
         # plt.savefig('visualization2.png')
 
-        # Here are my AWS keys
-        access_key = "AKIAVHIF3775VD7BVKJV"
-        secret = "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"
+        # # Here are my AWS keys
+        # access_key = "AKIAVHIF3775VD7BVKJV"
+        # secret = "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"
 
-        # Connecting to s3 instance using keys
-        s3 = boto3.resource("s3", aws_access_key_id=access_key,
-                            aws_secret_access_key=secret)
-        s3_client = boto3.client(
-            's3', aws_access_key_id=access_key, aws_secret_access_key=secret)
+        # # Connecting to s3 instance using keys
+        # s3 = boto3.resource("s3", aws_access_key_id=access_key,
+        #                     aws_secret_access_key=secret)
+        # s3_client = boto3.client(
+        #     's3', aws_access_key_id=access_key, aws_secret_access_key=secret)
 
-        # Specifying bucket
-        bucket = s3.Bucket('project-slate-bucket')
+        # # Specifying bucket
+        # bucket = s3.Bucket('project-slate-bucket')
 
-        # Deleting all contents of bucket first
-        bucket.objects.all().delete()
+        # # Deleting all contents of bucket first
+        # bucket.objects.all().delete()
 
         # # Then uploading the two visualizations
         # s3_client.upload_file(
@@ -80,6 +80,7 @@ def generate_graphs(df):
         # return (url1, url2)
         return {}
         # return {"Graph1": url1, "Graph2": url2}
-    except:
+    except Exception as err:
+        print(err)
         print("Error occured")
         return {}

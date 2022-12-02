@@ -54,10 +54,10 @@ class Model:
     def returnRes(self, action):
         if action:
             return {"messageType": "Info", "message": self.message, "model": self.jsonModel.get(), "Results": self.processJsonModel(),
-                    "CurrentProcess": action, "Scores": self.scores, "Graphs": generate_graphs(self.df)}
+                    "CurrentProcess": action, "Scores": self.scores, "Graphs": {}}
         else:
             return {"messageType": "Info", "message": self.message, "model": self.jsonModel.get(), "Results": self.processJsonModel(),
-                    "CurrentProcess": {}, "Scores": self.scores, "Graphs": generate_graphs(self.df)}
+                    "CurrentProcess": {}, "Scores": self.scores, "Graphs": {}}
 
     def processJsonModel(self):
         self.message = ""
