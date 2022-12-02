@@ -11,6 +11,7 @@ from sklearn.model_selection import train_test_split
 from Transformations.RemoveNullValues import ApplyRemoveNullRows, ApplyRemoveNullColumns
 from Transformations.ReplaceNullValues import ReplaceNulls
 from Transformations.RemoveOutliers import removeOutliers
+from graphs import generate_graphs
 
 
 class Model:
@@ -24,6 +25,8 @@ class Model:
         self.scores = None
         self.jsonModel.resetModel()
         self.text = ""
+        self.message = ""
+        print(generate_graphs(self.df))
 
     def process(self, text):
         if self.text == text:
@@ -41,19 +44,30 @@ class Model:
                 ActionItem["Selected"], ActionItem["Params"])
         elif ActionItem["Action"] == "ModelSelection":
             self.ModelSelection(ActionItem["value"])
+        elif ActionItem["Action"] == "RemoveBlock":
+            self.RemoveBlock(ActionItem["value"])
         elif ActionItem["Action"] == "Question":
-            pass
+            print(ActionItem["Text"])
+            self.message = ActionItem["Text"]
+
         return self.returnRes(ActionItem)
 
     def returnRes(self, action):
         if action:
-            return {"model": self.jsonModel.get(), "Results": self.processJsonModel(),
-                    "CurrentProcess": action, "Scores": self.scores}
+            return {"messageType": "Info", "message": self.message, "model": self.jsonModel.get(), "Results": self.processJsonModel(),
+                    "CurrentProcess": action, "Scores": self.scores, "Graphs": generate_graphs(self.df)}
         else:
-            return {"model": self.jsonModel.get(), "Results": self.processJsonModel(),
-                    "CurrentProcess": {}, "Scores": self.scores}
+            return {"messageType": "Info", "message": self.message, "model": self.jsonModel.get(), "Results": self.processJsonModel(),
+                    "CurrentProcess": {}, "Scores": self.scores, "Graphs": generate_graphs(self.df)}
 
     def processJsonModel(self):
+        self.message = ""
+        self.df = pd.DataFrame({})
+        self.X_train = None
+        self.X_test = None
+        self.y_train = None
+        self.y_test = None
+        self.scores = None
         model_json = self.jsonModel.get()
         for block in model_json["Blocks"]:
             if block["Category"] == "Data":
@@ -173,6 +187,9 @@ class Model:
         results = [parsed[i] for i in list(parsed.keys())]
         results.insert(0, columns)
         return results
+
+    def RemoveBlock(self, index):
+        self.jsonModel.remove(index)
 
     def ResetModel(self):
         self.jsonModel = JM()

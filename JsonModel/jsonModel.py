@@ -64,6 +64,11 @@ class JsonModel:
         self.saveModel()
         return self.model
 
+    def remove(self, index):
+        blocks = self.model["Blocks"]
+        blocks.pop(index-1)
+        self.model["Blocks"] = blocks
+
     def get(self):
         return self.model
 

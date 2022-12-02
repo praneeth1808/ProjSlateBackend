@@ -15,18 +15,22 @@ model = Model()
 
 @app.route('/process/', methods=['GET'])
 def respond():
-    # input the string as text
-    text = request.args.get("text", None)
-    print(f"Received: {text}")
+    try:
+        # input the string as text
+        text = request.args.get("text", None)
+        print(f"Received: {text}")
 
-    response = {}
+        response = {}
 
-    if not text:
-        response["ERROR"] = "No text Found found. Please send a text."
-    else:
-        response = model.process(text)
-    # Return the response in json format
-    return jsonify(response)
+        if not text:
+            response["ERROR"] = "No text Found found. Please send a text."
+        else:
+            response = model.process(text)
+        # Return the response in json format
+        return jsonify(response)
+    except Exception as err:
+        return jsonify({"messageType": "Error", "message": str(err), "model": model.getModel(), "Results": {},
+                        "CurrentProcess": {}, "Scores": {}, "Graphs": {}})
 
 
 @app.route('/results/', methods=['GET'])
@@ -37,12 +41,17 @@ def respond_res():
 @app.route('/resetModel/', methods=['GET'])
 def respond_reset():
     model.ResetModel()
-    return jsonify({"CurrentProcess": {}, "Results": None, "model": model.ResetModel()})
+    return jsonify({"messageType": "", "message": "", "CurrentProcess": {}, "Results": None, "model": model.ResetModel()})
 
 
-@app.route('/getModel/', methods=['GET'])
+@app.route('/get/', methods=['GET'])
 def respond_get():
-    return jsonify(model.getModel())
+    return jsonify(model.returnRes(None))
+
+
+@app.route('/scores/', methods=['GET'])
+def respond_getscores():
+    return jsonify({"Scores": model.scores})
 
 
 @app.route('/')
