@@ -4,7 +4,7 @@ import pandas as pd
 
 def ApplyStandardization(df, cols):
     scale = StandardScaler()
-    if cols == "All":
+    if cols == "All" or len(cols) == 0:
         X = df[df.columns[:-1]]
         scaled_data = scale.fit_transform(X)
         df_scaled = pd.DataFrame(scaled_data, columns=df.columns[:-1])

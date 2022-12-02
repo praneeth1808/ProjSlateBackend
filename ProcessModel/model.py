@@ -46,9 +46,7 @@ class Model:
         elif ActionItem["Action"] == "RemoveBlock":
             self.RemoveBlock(ActionItem["value"])
         elif ActionItem["Action"] == "Question":
-            print(ActionItem["Text"])
             self.message = ActionItem["Text"]
-
         return self.returnRes(ActionItem)
 
     def returnRes(self, action):
@@ -68,6 +66,7 @@ class Model:
         self.y_test = None
         self.scores = None
         model_json = self.jsonModel.get()
+        print(model_json)
         for block in model_json["Blocks"]:
             if block["Category"] == "Data":
                 self.processDataBlock(block)
@@ -134,7 +133,6 @@ class Model:
         unique_ration = (len(self.df[self.df.columns[-1]].unique()) /
                          len(self.df[self.df.columns[-1]]))
         if self.df.empty:
-            print("Empty dataframe")
             return
         self.df = ApplyRemoveNullRows(self.df, "All")
         if self.X_train is not None or self.X_test is not None or self.y_train is not None or self.y_test is not None:
@@ -147,24 +145,20 @@ class Model:
                 if unique_ration < 0.05:
                     response = LinearClassificationModel(
                         self.X_train, self.X_test, self.y_train, self.y_test)
-                    print(response["Scores"])
                     self.scores = response["Scores"]
                 else:
                     response = LinearRegressionModel(
                         self.X_train, self.X_test, self.y_train, self.y_test)
-                    print(response["Scores"])
                     self.scores = response["Scores"]
             else:
                 if unique_ration < 0.05:
                     response = DecissionTreeClassifierModel(
                         self.X_train, self.X_test, self.y_train, self.y_test)
                     self.scores = response["Scores"]
-                    print(response["Scores"])
                 else:
                     response = DecissionTreeRegressorModel(
                         self.X_train, self.X_test, self.y_train, self.y_test)
                     self.scores = response["Scores"]
-                    print(response["Scores"])
 
     def Results(self):
         # if self.scores is not None:
@@ -180,7 +174,7 @@ class Model:
         #         "X_test": json.loads(result_X_test),
         #         "y_test": result_y_test
         #     }
-        result = self.df.head(3).to_json(orient="index")
+        result = self.df.to_json(orient="index")
         columns = list(self.df.columns)
         parsed = json.loads(result)
         results = [parsed[i] for i in list(parsed.keys())]

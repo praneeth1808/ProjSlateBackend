@@ -15,7 +15,6 @@ def DecissionTreeClassifierModel(X_train, X_test, y_train, y_test):
 
 
 def DecissionTreeRegressorModel(X_train, X_test, y_train, y_test):
-    print("Got into regression")
     clf = DecisionTreeRegressor()
     clf = clf.fit(X_train, y_train)
     return {"Model": clf, "Scores":

@@ -133,8 +133,7 @@ class JsonModel:
                     block, columns, params["OutliersOptions"])
             else:
                 block, message = self.ModifyTheExistingBlock(
-                    block, columns)
-
+                    block, columns, None, params)
             self.updateBlock(block)
             return self.model
         block = {
@@ -355,7 +354,7 @@ class JsonModel:
             for block in self.model["Blocks"]:
                 if block["Category"] == "Transform":
                     attributes = processComplexJson(block["Attributes"])
-                    if attributes["Apply"] == "ReplaceNullValues" and option == attributes["ReplaceWith"]:
+                    if attributes["Apply"] == "ReplaceNullValues":
                         return block
         elif selection == "RemoveOutliers":
             for block in self.model["Blocks"]:
@@ -365,12 +364,17 @@ class JsonModel:
                         return block
         return None
 
-    def ModifyTheExistingBlock(self, block, columns, option=None):
+    def ModifyTheExistingBlock(self, block, columns, option=None, params=None):
         attributes = processComplexJson(block["Attributes"])
         if option != None:
             for index, att in enumerate(block["Attributes"]):
                 if (att["key"] == "Option"):
                     block["Attributes"][index]["value"] = option
+            return [block, ""]
+        elif "ReplaceWith" in attributes:
+            for index, att in enumerate(block["Attributes"]):
+                if (att["key"] == "ReplaceWith"):
+                    block["Attributes"][index]["value"] = params["replaceoptions"]
             return [block, ""]
         elif "Columns" in attributes:
             if attributes["Columns"] == "All":
@@ -387,6 +391,7 @@ class JsonModel:
                         for col in columns:
                             block["Attributes"][index]["value"].append(col)
                 return [block, ""]
+
         else:
             return [block, "Something wrong"]
 

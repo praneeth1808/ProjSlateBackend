@@ -16,7 +16,6 @@ def LinearRegressionModel(X_train, X_test, y_train, y_test):
 
 
 def LinearClassificationModel(X_train, X_test, y_train, y_test):
-    print("Got to Classification")
     lr = LogisticRegression()
     lr = lr.fit(X_train, y_train)
     Training_Score = lr.score(X_train, y_train)
