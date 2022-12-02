@@ -26,7 +26,6 @@ class Model:
         self.jsonModel.resetModel()
         self.text = ""
         self.message = ""
-        print(generate_graphs(self.df))
 
     def process(self, text):
         if self.text == text:

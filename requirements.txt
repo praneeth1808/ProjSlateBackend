@@ -17,3 +17,4 @@ numpy==1.23.4
 flask-cors==3.0.10
 boto3==1.26.12
 seaborn==0.12.1
+kaleido==0.2.1
